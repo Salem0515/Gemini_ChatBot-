@@ -1,86 +1,105 @@
-import React, { useContext } from 'react'
-import './main.css'
-import { assets } from '../../assets/assets'
-import { Context } from '../../Context/Context'
+import React, { useContext, useState, useRef } from 'react';
+import './main.css';
+import { assets } from '../../assets/assets';
+import { Context } from '../../Context/Context';
 
 const Main = () => {
+    const { onSent, conversations, Loading, Input, setInput } = useContext(Context);
+    const [image, setImage] = useState(null);
+    const fileInputRef = useRef(null);
 
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter' && Input.trim()) {
+            sendMessage();
+        }
+    };
 
-    const { onSent, RecentPrompt, showResult, Loading, ResultData, Input, setInput } = useContext(Context)
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(URL.createObjectURL(file));
+        }
+    };
 
-    const safeResultData = typeof ResultData === 'string' ? ResultData : '';
+    const handlePictureClick = () => {
+        fileInputRef.current.click();
+    };
 
+    const sendMessage = () => {
+        if (Input.trim() || image) {
+            onSent({ text: Input, image });
+            setInput("");
+            setImage(null);
+        }
+    };
 
     return (
-
-
         <div className='main'>
             <div className="nav">
                 <p>Gemini</p>
                 <img src={assets.user_icon} alt="" />
             </div>
             <div className="main_container">
-                {!showResult ? <>
-                    <div className="greet">
-                        <p><span>Hello, Dev.</span></p>
-                        <p>how can I help you today</p>
-                    </div>
-                    <div className="cards">
-                        <div className="card">
-                            <p>Suggest a beautiful place to see on the next upcoming road trip </p>
-                            <img src={assets.compass_icon} alt="" />
+                <div className="greet">
+                    <p><span>Hello, Dev.</span></p>
+                    <p>how can I help you today</p>
+                </div>
+                <div className="conversation-list">
+                    {conversations.map((conv, index) => (
+                        <div key={index} className='conversation'>
+                            <div className='titleResult'>
+                                <img src={assets.user_icon} alt="" />
+                                <p>{conv.prompt}</p>
+                            </div>
+                            <div className="resultData">
+                                <img src={assets.gemini_icon} alt="" />
+                                <div className="juster">
+                                <p dangerouslySetInnerHTML={{ __html: conv.response || '' }}></p>
+                                {conv.image && <img src={conv.image} alt="Attachment" className="attachment-image" />}
+                                </div>
+                            </div>
                         </div>
-                        <div className="card">
-                            <p>Briefly summarize this concept: urban planning </p>
-                            <img src={assets.bulb_icon} alt="" />
-                        </div>
-                        <div className="card">
-                            <p>Brainstorm team bonding activities for our work retreat  </p>
-                            <img src={assets.message_icon} alt="" />
-                        </div>
-                        <div className="card">
-                            <p>improve the readability of the following code </p>
-                            <img src={assets.code_icon} alt="" />
-                        </div>
-                    </div>
-                </>
-                    : <div className='result'>
-                        <div className='titleResult'>
-                            <img src={assets.user_icon} alt="" />
-                            <p>{RecentPrompt}</p>
-                        </div>
-                        <div className="resultData">
-                            <img src={assets.gemini_icon} alt="" />
-                            {Loading ? <div className='loader'>
-                                <hr />
-                                <hr />
-                                <hr />
-                            </div> :
-                                <p dangerouslySetInnerHTML={{ __html: ResultData || '' }}></p>
-
-                            }
-
-                        </div>
-                    </div>
-                }
-
-
+                    ))}
+                    {Loading && <div className='loader'>
+                        <hr />
+                        <hr />
+                        <hr />
+                    </div>}
+                </div>
                 <div className="main_bottom">
                     <div className="search_box">
-                        <input onChange={(e) => setInput(e.target.value)} value={Input} type="text" placeholder='Enter a prompt here' />
+                        <input 
+                            onChange={(e) => setInput(e.target.value)} 
+                            value={Input} 
+                            type="text" 
+                            placeholder='Enter a prompt here'
+                            onKeyDown={handleKeyDown}
+                        />
+                        {image && <img src={image} alt="Selected" className="preview-image" />}
                         <div>
-                            <img src={assets.gallery_icon} alt="" />
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                                onChange={handleFileChange}
+                            />
+                            <img 
+                                src={assets.gallery_icon} 
+                                alt="Attach" 
+                                onClick={handlePictureClick} 
+                                style={{ cursor: 'pointer' }}
+                            />
                             <img src={assets.mic_icon} alt="" />
-                            {Input ? <img onClick={() => onSent()} src={assets.send_icon} alt="" /> : null}
+                            {(Input || image) && <img onClick={sendMessage} src={assets.send_icon} alt="" />}
                         </div>
                     </div>
                     <p className='bottom-info'>
-                        Gemini may display inaccurate info, including about people, so double-check its resonses and Gemini Apps
+                        Gemini may display inaccurate info, including about people, so double-check its responses and Gemini Apps
                     </p>
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
-export default Main
+export default Main;
