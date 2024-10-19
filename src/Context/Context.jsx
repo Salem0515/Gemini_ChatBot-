@@ -10,7 +10,7 @@ const ContextProvider = (props) => {
     const [showResult, setShowResult] = useState(false);
     const [Loading, setLoading] = useState(false);
     const [ResultData, setResultData] = useState("");
-    const [conversations, setConversations] = useState([]); // Add state for conversations
+    const [conversations, setConversations] = useState([]); // State for conversations
 
     const delypara = (index, nextword) => {
         setTimeout(() => {
@@ -23,47 +23,34 @@ const ContextProvider = (props) => {
         setShowResult(false);
     };
 
-    const onSent = async ({ text, image }) => {
+    const onSent = async ({ text, image, imageDescription }) => {
         setResultData("");
         setLoading(true);
         setShowResult(true);
 
         let response;
         try {
-            response = await run(text);
+            response = await run(text); // Your existing AI processing function
             setRecentePrompt(text);
 
             // Update the conversations state with the new message and its response
             setConversations(prev => [
                 ...prev,
-                { prompt: text, response, image } // Add image if available
+                { prompt: text, response: imageDescription ? `${response} (Image: ${imageDescription})` : response, image } // Add image if available
             ]);
-
-            let resonseArry = response.split("**");
-            let newResponse = "";
-            for (let i = 0; i < resonseArry.length; i++) {
-                if (i === 0 || i % 2 !== 1) {
-                    newResponse += resonseArry[i];
-                } else {
-                    newResponse += "<b>" + resonseArry[i] + "</b>";
-                }
-            }
-
-            let newResponse2 = newResponse.split("*").join("<br/>");
-            let newResponseArry = newResponse2.split(" ");
-
-            for (let i = 0; i < newResponseArry.length; i++) {
-                const nextword = newResponseArry[i];
-                delypara(i, nextword + " ");
-            }
 
             setLoading(false);
             setInput("");
-            setImage(null); // Clear image after sending
         } catch (error) {
             console.error("Error sending message:", error);
             setLoading(false);
         }
+    };
+
+    const formatResponse = (response) => {
+        let formattedResponse = response.replace(/(?:\*\*(.*?)\*\*)/g, "<b>$1</b>");
+        formattedResponse = formattedResponse.replace(/(?:\*(.*?)\*)/g, "<br>$1");
+        return formattedResponse;
     };
 
     const ContextValue = {
