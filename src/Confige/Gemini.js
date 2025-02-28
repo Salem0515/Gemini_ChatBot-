@@ -1,4 +1,4 @@
-const API_KEY = import.meta.env.VITE_DEEPSEEK_API_KEY;
+const API_KEY = 'sk-a1c4c78cde28451297bcb5fdf532a7c3';
 const API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 const generationConfig = {
