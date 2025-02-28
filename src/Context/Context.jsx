@@ -1,5 +1,5 @@
 import React, { createContext, useState } from "react";
-import run from "../Confige/Gemini";
+import run from "../Confige/DeepSeek"; // Updated to DeepSeek config
 
 export const Context = createContext();
 
@@ -28,15 +28,14 @@ const ContextProvider = (props) => {
         setLoading(true);
         setShowResult(true);
 
-        let response;
         try {
-            response = await run(text); // Your existing AI processing function
+            const response = await run(text); // Use DeepSeek's run function
             setRecentePrompt(text);
 
-            // Update the conversations state with the new message and its response
+            // Update conversations with the new prompt and response
             setConversations(prev => [
                 ...prev,
-                { prompt: text, response: imageDescription ? `${response} (Image: ${imageDescription})` : response, image } // Add image if available
+                { prompt: text, response: imageDescription ? `${response} (Image: ${imageDescription})` : response, image }
             ]);
 
             setLoading(false);
@@ -65,7 +64,7 @@ const ContextProvider = (props) => {
         Input,
         setInput,
         newChat,
-        conversations // Provide conversations state to the context
+        conversations
     };
 
     return (
