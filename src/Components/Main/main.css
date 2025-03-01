@@ -1,8 +1,11 @@
 .main {
-    flex: 1;
-    min-height: 100vh;
-    padding-bottom: 15vh;
-    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack nav, content, and search box vertically */
+    justify-content: space-between; /* Space between top and bottom */
+    min-height: 100vh; /* Ensure the container takes full screen height */
+    padding-bottom: 15vh; /* Extra padding for the fixed search box */
+    position: relative; /* For positioning relative to the screen */
+    background-color: #f8fafc;
 }
 
 .main .nav {
@@ -12,22 +15,26 @@
     font-size: 22px;
     padding: 20px;
     color: #585858;
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
 }
 
 .main .nav img {
-    width: 40px;
+    width: 30px; /* Reduced size */
+    height: 30px;
     border-radius: 50%;
 }
 
 .main_container {
+    flex-grow: 1; /* Allow the conversation area to grow and take up available space */
     max-width: 900px;
-    margin: auto;
+    margin: auto; /* Center the content horizontally */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
+    justify-content: flex-start;
+    overflow-y: auto; /* Enable scrolling for the conversation list */
+    height: calc(100vh - 80px); /* Adjust height to fit screen minus the nav height */
 }
-
 .main .greet {
     margin: 50px 0;
     font-size: 56px;
@@ -47,6 +54,7 @@
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 15px;
     padding: 20px;
+    
 }
 
 .main .card {
@@ -56,6 +64,7 @@
     border-radius: 10px;
     position: relative;
     cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .main .card img {
@@ -68,28 +77,48 @@
     right: 10px;
 }
 
+.search_box img:hover {
+    background-color: #e0e0e0;
+    transform: scale(1.1);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
 .main .card p {
     color: #585858;
     font-size: 17px;
 }
-
 .main .card:hover {
-    background-color: #dfe4ea;
+    background-color: #e8ecf1;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+.main_bottom {
+    position: fixed; /* Keep the search box fixed at the bottom */
+    bottom: 0; /* Align to the bottom of the screen */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Ensure perfect centering */
+    width: 100%; /* Stretch across the full width */
+    max-width: 900px; /* Limit maximum width for better design */
+    background-color: #f8fafc; /* Match the background */
+    padding: 10px 20px; /* Add padding for space inside the search box */
+    border-top: 1px solid #e0e0e0; /* Optional border for separation */
+    z-index: 100; /* Ensure it's above other elements */
 }
 
-.main_bottom {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    max-width: 900px;
-    padding: 0 20px;
-    margin: auto;
+.copy-button {
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.copy-button:hover {
+    background-color: #e6e6e6;
+    transform: scale(1.05);
 }
 
 .conversation-list {
-    flex-grow: 1;
-    overflow-y: auto;
-    margin-bottom: 10px;
+    flex-grow: 1; /* Let the conversation area grow to fill space */
+    overflow-y: auto; /* Enable scrolling */
+    margin-bottom: 20px; /* Space between conversation list and fixed search box */
+    padding-bottom: 120px; /* Ensure content doesn't overlap with fixed search box */
 }
 
 .conversation {
@@ -100,11 +129,9 @@
 }
 
 .conversation img.attachment-image {
-    width: 80px; /* Adjust size to your preference */
-    height: 80px; /* Adjust size to your preference */
-    object-fit: cover; /* Ensure image covers the area without distortion */
+    width: 60px; /* Slightly smaller attachments */
+    height: 60px;
     border-radius: 10px;
-    margin-bottom: 10px; /* Space between image and text */
 
 }
 
@@ -117,29 +144,28 @@
 }
 
 .juster img {
-    display: flex;
-    align-items: flex-end;
-
-    justify-content: end;
+    width: 30px; /* Consistent icon size */
+    height: 30px;
+    border-radius: 50%;
 }
-
 .search_box {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
+    display: flex; /* Align items in a row */
+    align-items: center; /* Center items vertically */
+    justify-content: space-between; /* Space between input and icons */
+    gap: 20px; /* Add space between input and icons */
     background-color: #f0f4f9;
     padding: 10px 20px;
-    border-radius: 20px;
+    border-radius: 20px; /* Round corners for a modern look */
+    width: 100%;
 }
+
 
 .search_box img {
-    width: 24px;
+    width: 24px; /* Consistent icon size */
     cursor: pointer;
 }
-
 .search_box input {
-    flex: 1;
+    flex: 1; /* Make the input take up all available space */
     background-color: transparent;
     border: none;
     outline: none;
@@ -181,8 +207,15 @@
     gap: 20px;
 }
 
+.titleResult img {
+    width: 30px; /* Smaller user icon */
+    height: 30px;
+    border-radius: 50%;
+}
+
 .result img {
-    width: 40px; /* Size of user icon */
+    width: 30px; /* Smaller user icon */
+    height: 30px;
     border-radius: 50%;
 }
 
@@ -194,7 +227,8 @@
     line-height: 1.8;
 }
 .resultData img {
-    width: 40px; /* Size of user icon */
+    width: 30px; /* Matching size for consistency */
+    height: 30px;
     border-radius: 50%;
 }
 
@@ -213,6 +247,13 @@
     background-size: 800px 50px;
     height: 20px;
     animation: loader 3s linear infinite;
+}
+
+.bottom-info {
+    font-size: 13px;
+    text-align: center;
+    font-weight: 300;
+    padding-top: 5px; /* Add space above the text */
 }
 
 @keyframes loader {
@@ -240,6 +281,45 @@
 
     .search_box div {
         gap: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .main .greet {
+        font-size: 36px;
+        text-align: center;
+    }
+
+    .search_box {
+        flex-direction: column;
+        gap: 10px;
+        padding: 8px;
+    }
+
+    .search_box input {
+        font-size: 16px;
+    }
+
+    .main .cards {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+}
+
+@media (max-width: 360px) {
+    .main .greet {
+        font-size: 28px;
+    }
+
+    .search_box {
+        padding: 5px;
+    }
+
+    .search_box img {
+        width: 20px;
+    }
+
+    .main .cards {
+        gap: 10px;
     }
 }
 
@@ -289,4 +369,32 @@
 
 .copy-button:hover {
     background-color: #e6e6e6;
+}
+
+@media (max-width: 480px) {
+    .result img,
+    .resultData img,
+    .juster img {
+        width: 25px;
+        height: 25px;
+    }
+
+    .conversation img.attachment-image {
+        width: 50px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 360px) {
+    .result img,
+    .resultData img,
+    .juster img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .conversation img.attachment-image {
+        width: 40px;
+        height: 40px;
+    }
 }
