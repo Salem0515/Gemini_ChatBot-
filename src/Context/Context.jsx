@@ -1,5 +1,16 @@
 import React, { createContext, useState } from "react";
-import run from "../Confige/DeepSeek"; // Updated to DeepSeek config
+import run from "../Confige/Gemini";
+
+// Mock function for image analysis (replace with your actual implementation)
+const analyzeImage = async (imageUrl) => {
+    // Simulate an API call that returns image description
+    // In a real scenario, replace this with your image analysis logic
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(`Description of the image at ${imageUrl}`);
+        }, 1000);
+    });
+};
 
 export const Context = createContext();
 
@@ -23,23 +34,30 @@ const ContextProvider = (props) => {
         setShowResult(false);
     };
 
-    const onSent = async ({ text, image, imageDescription }) => {
+    const onSent = async ({ text, image }) => {
         setResultData("");
         setLoading(true);
         setShowResult(true);
 
+        let response;
         try {
-            const response = await run(text); // Use DeepSeek's run function
+            let imageDescription = '';
+            if (image) {
+                imageDescription = await analyzeImage(image); // Analyze the image and get the description
+            }
+
+            response = await run(text); // Your existing AI processing function
             setRecentePrompt(text);
 
-            // Update conversations with the new prompt and response
+            // Update the conversations state with the new message and its response
             setConversations(prev => [
                 ...prev,
-                { prompt: text, response: imageDescription ? `${response} (Image: ${imageDescription})` : response, image }
+                { prompt: text, response: imageDescription ? `${response} (Image: ${imageDescription})` : response, image } // Add image if available
             ]);
 
             setLoading(false);
             setInput("");
+            // No need to setImage(null) here since image is already cleared in Main component
         } catch (error) {
             console.error("Error sending message:", error);
             setLoading(false);
@@ -64,7 +82,7 @@ const ContextProvider = (props) => {
         Input,
         setInput,
         newChat,
-        conversations
+        conversations // Provide conversations state to the context
     };
 
     return (
