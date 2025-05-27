@@ -156,6 +156,9 @@ const Main = () => {
                     <p className='bottom-info'>
                         Gemini may display inaccurate info, including about people, so double-check its responses and Gemini Apps
                     </p>
+                    <p className='bottom-info'>
+                        Designed and Developed by Mohamed Hussein 
+                    </p>
                 </div>
             </div>
         </div>
